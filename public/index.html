@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Misfit Architecture — Your Mini Map</title>
+<meta name="description" content="Map your starting position. See what is taking from you, what you bring, and what it actually costs. From ENOUGH by Tanya Hicks.">
+<meta name="theme-color" content="#1A1A1A">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/participant.css">
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="sr-announcements" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+<div id="reading-guide"></div>
+
+<!-- ── Header ── -->
+<header class="app-header" role="banner">
+  <div class="app-brand">
+    <div class="app-title">Misfit Architecture</div>
+    <div class="app-subtitle">Your Mini Map — ENOUGH</div>
+  </div>
+  <nav class="phase-progress" aria-label="Progress">
+    <button class="phase-step active" id="step1" onclick="goPhase(1)" aria-label="Phase 1: Build your picture" aria-current="step">1</button>
+    <div class="phase-step-line" id="line1"></div>
+    <button class="phase-step" id="step2" onclick="goPhase(2)" aria-label="Phase 2: Your starting position">2</button>
+    <div class="phase-step-line" id="line2"></div>
+    <button class="phase-step" id="step3" onclick="goPhase(3)" aria-label="Phase 3: Reprice">3</button>
+  </nav>
+</header>
+
+<main id="main">
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ═══════════════════════════════════════════
+     PHASE 1 — BUILD YOUR PICTURE
+     ═══════════════════════════════════════════ -->
+<section class="phase phase-1 active" id="p1" aria-label="Phase 1: Build your picture">
+
+  <div class="phase-header">
+    <div class="phase-label">
+      <div class="phase-num" aria-hidden="true">1</div>
+      <div class="phase-label-text">Build your picture</div>
+      <button class="tts-btn" onclick="speakPhase(1)" aria-label="Listen to this section">🔈 Listen</button>
+    </div>
+    <h1 class="phase-title">What are you<br>actually working with?</h1>
+    <p class="phase-sub">Tap everything that is true for you right now. Your starting position is worked out from this, not a guess.</p>
+  </div>
+
+  <!-- Battery visual -->
+  <div class="battery-wrap" role="img" aria-label="Your capacity level">
+    <div class="battery">
+      <div class="battery-fill" id="battery-fill" style="transform: scaleY(1)"></div>
+      <div class="battery-pct" id="battery-pct" style="color: #fff">100%</div>
+    </div>
+    <div class="battery-label">
+      <div class="battery-label-top">Your capacity</div>
+      <div class="battery-label-bottom" id="battery-status" style="color: var(--asset)">Full</div>
+    </div>
+  </div>
+
+  <div class="phase-content">
+
+    <div class="intro-box">
+      <strong>Why we do this first</strong>
+      Every strategy you have ever been given assumes you start from the same place as everyone else. You do not. Before anything else, you need to see what you are actually carrying, and what you already have. Tap what is true. Your starting position comes from this.
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.1);font-size:0.75rem;color:var(--gold)">
+        Everything you tap stays on your device only. Nobody else, not the room, not the presenter, not us, sees what you choose. The only thing shared with the room is which starting position you land on. Nothing else.
+      </div>
+    </div>
+
+    <!-- ── COSTS ── -->
+    <div class="section-label section-label-cost" aria-label="Cost items">What is costing you, tap everything that is true right now</div>
+
+    <details open class="cost-group" id="group-identity">
+      <summary>
+        <span class="group-dot" style="background:var(--cost)" aria-hidden="true"></span>
+        Before You Even Start
+        <span class="group-hint">What you are dealing with before the race begins</span>
+      </summary>
+      <div class="chips" role="group" aria-label="Identity and safety costs">
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="carpark" data-hrs="4" data-counter="Safety, a home, a body, a life where the baseline is stable" data-legacy="The next woman starts from safety, not despite the absence of it" onclick="toggleCost(this)">Domestic violence or an unsafe home</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="carpark" data-hrs="3" data-counter="Stable housing, a secure base you do not have to fight for" data-legacy="The next woman builds from a foundation, not on sand" onclick="toggleCost(this)">Housing insecurity</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="carpark" data-hrs="3" data-counter="A second income or safety net, not carrying the full financial weight alone" data-legacy="The next woman does not build her business as her only lifeline" onclick="toggleCost(this)">Single income, no second earner, no safety net</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="carpark" data-hrs="2" data-counter="Full access to opportunities regardless of status" data-legacy="The next woman is not limited by paperwork" onclick="toggleCost(this)">Immigration status limiting what I can access</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="carpark" data-hrs="2" data-counter="A health system and work environment that accounts for your body" data-legacy="The next woman with a chronic condition is accommodated, not penalised" onclick="toggleCost(this)">Disability or chronic illness</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="carpark" data-hrs="1.5" data-counter="A path already walked, mentors, models, a map that exists" data-legacy="The next first-generation woman has a trail already marked" onclick="toggleCost(this)">Being the first in my family to build something like this</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="carpark" data-hrs="1.5" data-counter="Freedom to define success on your own terms" data-legacy="The next woman in your culture sees ambition and motherhood as compatible" onclick="toggleCost(this)">Cultural or religious pressure to stay in my lane</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="carpark" data-hrs="2" data-counter="A world that does not make you choose between motherhood and ambition" data-legacy="The next generation of daughters never hears that question" onclick="toggleCost(this)">Feeling like I have to choose between good mother or ambitious woman</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="carpark" data-hrs="1" data-counter="Spaces where women like you are already visible and leading" data-legacy="The next woman like you sees someone who looks like her already there" onclick="toggleCost(this)">Not seeing women like me in leadership</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="carpark" data-hrs="1.5" data-counter="Freedom to take up space without apology" data-legacy="The next woman never learns to make herself smaller" onclick="toggleCost(this)">Shrinking myself to make other people comfortable</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="carpark" data-hrs="1" data-counter="A world where how you look does not determine how seriously you are taken" data-legacy="The next woman is judged on her work, not her appearance" onclick="toggleCost(this)">The time and cost of how I have to show up (appearance tax)</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="carpark" data-hrs="1.5" data-counter="A medical system that listens the first time" data-legacy="The next woman is believed by her doctor before she has to fight for it" onclick="toggleCost(this)">Health symptoms dismissed or not taken seriously (medical gaslighting)</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="carpark" data-hrs="1.5" data-counter="People who check on you without being asked" data-legacy="The next strong woman is held before she has to ask" onclick="toggleCost(this)">I am the strong one. Nobody checks on me.</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="carpark" data-hrs="1.5" data-counter="An environment where safety is the baseline, not the thing you calculate" data-legacy="The next woman does not run every decision through a safety filter first" onclick="toggleCost(this)">Safety calculations in every decision</button>
+      </div>
+    </details>
+
+    <details open class="cost-group" id="group-body">
+      <summary>
+        <span class="group-dot" style="background:var(--cost)" aria-hidden="true"></span>
+        What Your Body is Carrying
+        <span class="group-hint">The physical and emotional toll</span>
+      </summary>
+      <div class="chips" role="group" aria-label="Body and energy costs">
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="injuries" data-hrs="2.5" data-counter="Sleep, real, sustained, uninterrupted sleep" data-legacy="The next generation of mothers is not expected to function on empty" onclick="toggleCost(this)">Broken sleep as a permanent baseline</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="injuries" data-hrs="2" data-counter="Medical support and workplace understanding for hormonal changes" data-legacy="The next woman going through perimenopause is supported, not silent" onclick="toggleCost(this)">Perimenopause or menopause unmanaged</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="injuries" data-hrs="2" data-counter="Time and support to recover, physically and emotionally" data-legacy="The next woman is given recovery as standard, not as a luxury" onclick="toggleCost(this)">Pregnancy, birth, or pregnancy loss</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="injuries" data-hrs="2" data-counter="A world that works with your brain, not against it" data-legacy="The next woman with ADHD or autism is supported from the start, not diagnosed after burnout" onclick="toggleCost(this)">My own additional needs (ADHD, autism, dyslexia, anxiety)</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="injuries" data-hrs="2" data-counter="Pain management and capacity planning that accounts for your reality" data-legacy="The next woman with chronic pain builds a business that accommodates it by design" onclick="toggleCost(this)">Chronic pain or chronic fatigue</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="injuries" data-hrs="2" data-counter="Trauma-informed support and a nervous system that gets to rest" data-legacy="The next woman carries less because someone before her was finally allowed to put it down" onclick="toggleCost(this)">A body that carries trauma</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="injuries" data-hrs="1.5" data-counter="Time and space to grieve, not squeezed into the margins" data-legacy="The next woman is allowed to stop when she needs to" onclick="toggleCost(this)">Grief I have not had time to sit with</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="injuries" data-hrs="2" data-counter="A complete reset, burnout treated as the injury it is, not a character flaw" data-legacy="The next woman recognises burnout before it becomes her normal" onclick="toggleCost(this)">Burnout that became my baseline</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="injuries" data-hrs="1.5" data-counter="Real energy, not the emergency supply" data-legacy="The next generation of women leaders runs on fuel, not fumes" onclick="toggleCost(this)">Running on adrenaline, not actual energy</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="injuries" data-hrs="1.5" data-counter="Mental health support that is accessible, affordable, and ongoing" data-legacy="The next woman gets support before she breaks" onclick="toggleCost(this)">Mental health conditions I manage alongside everything else</button>
+      </div>
+    </details>
+
+    <details open class="cost-group" id="group-care">
+      <summary>
+        <span class="group-dot" style="background:var(--cost)" aria-hidden="true"></span>
+        What You Carry That Nobody Measures
+        <span class="group-hint">The invisible load</span>
+      </summary>
+      <div class="chips" role="group" aria-label="Care and relational load costs">
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="3" data-counter="Affordable, reliable childcare that actually covers your working hours" data-legacy="The next mother builds her business with real support, not around the gaps" onclick="toggleCost(this)">Baby or young children at home</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="4" data-counter="Childcare, support, and capacity planning for more than one child" data-legacy="The next mother of multiple children is not expected to do it all" onclick="toggleCost(this)">Multiple children</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="4" data-counter="Specialist support, respite, and a system that does not make you fight for every accommodation" data-legacy="The next parent of a child with additional needs is supported by default" onclick="toggleCost(this)">A child or children with additional needs</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="3" data-counter="Shared or funded elder care, not sitting entirely on your shoulders" data-legacy="The next woman caring for parents has a system behind her" onclick="toggleCost(this)">Caring for elderly or unwell parents</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="3" data-counter="Support for your partner's needs that does not come entirely from you" data-legacy="The next carer-partner has their own support, not just their own endurance" onclick="toggleCost(this)">Caring for a partner with additional needs or illness</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="4" data-counter="A system around you, not just you, alone, holding everything" data-legacy="The next single parent has a village, not just a to-do list" onclick="toggleCost(this)">Single parenting</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="2" data-counter="Shared parenting, genuinely shared, not you delegating and checking" data-legacy="The next generation of children sees both parents carrying the load" onclick="toggleCost(this)">Being the default parent, always</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="1" data-counter="A shared contact list, not everything routed through you" data-legacy="The next mother is not the single point of failure for her family" onclick="toggleCost(this)">The school calls me, not anyone else</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="2" data-counter="The mental load shared or delegated, not carried by one person" data-legacy="The next generation sees invisible work as everyone's responsibility" onclick="toggleCost(this)">Every appointment, birthday, permission slip, mine</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="2" data-counter="A household that runs without you holding every thread" data-legacy="Homes where the operational load is visibly and fairly shared" onclick="toggleCost(this)">Running the household on top of the business</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="2" data-counter="A partner who carries equal load, without being managed into it" data-legacy="The next generation of partnerships starts from equal" onclick="toggleCost(this)">A partner who does not carry equal load</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="2" data-counter="Maternity leave, sick pay, and a safety net, not luxuries, basics" data-legacy="The next solopreneur has a floor under her" onclick="toggleCost(this)">No maternity leave, no sick pay, no safety net</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="2" data-counter="Affordable, reliable, accessible childcare" data-legacy="The next working mother does not lose money to work" onclick="toggleCost(this)">Inadequate or unaffordable childcare</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="1" data-counter="A home where someone else notices before you have to say it" data-legacy="The next woman lives in a home where running out is not her problem alone" onclick="toggleCost(this)">I know when everything runs out</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="1" data-counter="Shared social and family coordination, not all on you" data-legacy="The next woman does not carry the entire social calendar" onclick="toggleCost(this)">I organise every gathering and remember every birthday</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="2" data-counter="Support for your own mental health that does not come last" data-legacy="The next woman looks after herself first without it being radical" onclick="toggleCost(this)">Managing everyone else's mental health except my own</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="1.5" data-counter="Permission to put yourself on the list, not at the bottom" data-legacy="The next woman puts herself first without guilt" onclick="toggleCost(this)">Everyone's needs before mine, every single day</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="weight" data-hrs="1" data-counter="A world that stops making you feel guilty for existing outside of service" data-legacy="The next generation of women does not inherit the guilt" onclick="toggleCost(this)">The guilt, whatever I choose</button>
+      </div>
+    </details>
+
+    <details open class="cost-group" id="group-structural">
+      <summary>
+        <span class="group-dot" style="background:var(--cost)" aria-hidden="true"></span>
+        Advice &amp; Systems Built for Someone Else
+        <span class="group-hint">The wrong map</span>
+      </summary>
+      <div class="chips" role="group" aria-label="Structural costs">
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="coached" data-hrs="1.5" data-counter="Business advice and models designed for people with care responsibilities" data-legacy="The next solopreneur with children gets a strategy that accounts for her actual life" onclick="toggleCost(this)">Business advice designed for people with no care load</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="coached" data-hrs="1" data-counter="Honest mentors who built what they built with the help they actually had" data-legacy="The next woman is told the truth about what success actually required" onclick="toggleCost(this)">Being told to hustle by people with a full support system</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="coached" data-hrs="1" data-counter="Networking and opportunity structures that work around care schedules" data-legacy="The next woman does not miss the opportunity because of the school run" onclick="toggleCost(this)">Networking and opportunities at times I cannot attend</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="coached" data-hrs="1.5" data-counter="An industry that values output over hours and results over presence" data-legacy="The next woman is judged on what she delivers, not when she is online" onclick="toggleCost(this)">An industry built around availability I do not have</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="coached" data-hrs="1" data-counter="Financial advice that accounts for the reality of the gender pay gap and unpaid work" data-legacy="The next woman gets financial planning built for her actual numbers" onclick="toggleCost(this)">Financial advice that ignores the gender pay gap</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="coached" data-hrs="1" data-counter="A reputation that speaks before you do" data-legacy="The next woman in your field does not have to prove herself first" onclick="toggleCost(this)">Being underestimated before I open my mouth</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="coached" data-hrs="1" data-counter="Spaces where you say something once and are believed" data-legacy="The next woman is believed the first time" onclick="toggleCost(this)">Overexplaining to be believed</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="coached" data-hrs="1" data-counter="Rooms where your voice carries equal weight" data-legacy="The next woman is credited for her ideas the first time she says them" onclick="toggleCost(this)">Talked over or ideas taken by someone else</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="coached" data-hrs="1" data-counter="Environments where your seniority is assumed, not questioned" data-legacy="The next woman walks in and is assumed to be the expert" onclick="toggleCost(this)">Assumed to be more junior than I am</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="coached" data-hrs="1.5" data-counter="Equal pay for equal work, full stop" data-legacy="The next woman does not have to negotiate just to be paid fairly" onclick="toggleCost(this)">Earning less for the same work (gender pay gap)</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="coached" data-hrs="1.5" data-counter="Guidance built for someone with your life, your load, and your starting position" data-legacy="The next solopreneur gets a playbook that was actually written for her" onclick="toggleCost(this)">Following a playbook written for someone with a different life</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="coached" data-hrs="1.5" data-counter="A financial safety net, savings, support, or fallback that does not depend on this working immediately" data-legacy="The next woman builds with a net, not over a cliff" onclick="toggleCost(this)">No safety net if this does not work</button>
+        <button class="chip chip-cost" role="switch" aria-checked="false" data-cat="coached" data-hrs="1" data-counter="Systems and support so the cost is paid once, not twice" data-legacy="The next woman does not pay double for everything" onclick="toggleCost(this)">Paying for everything twice, once in money, once in time</button>
+      </div>
+    </details>
+
+    <!-- ── ASSETS ── -->
+    <div class="section-label section-label-asset" aria-label="Asset items" style="margin-top:var(--space-sm)">What is working for you, tap everything that applies</div>
+
+    <details open class="asset-group" id="group-skills">
+      <summary>
+        <span class="group-dot" style="background:var(--asset)" aria-hidden="true"></span>
+        Skills &amp; Experience
+        <span class="group-hint">What you have built</span>
+      </summary>
+      <div class="chips" role="group" aria-label="Skills and experience assets">
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">Deep expertise in my field</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">Trusted reputation</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="1" onclick="toggleAsset(this)">Strong referral network</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">Years of real-world experience</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="1" onclick="toggleAsset(this)">My own method or framework</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="1" onclick="toggleAsset(this)">Skills others do not have</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">Results that speak for themselves</button>
+      </div>
+    </details>
+
+    <details open class="asset-group" id="group-conditions">
+      <summary>
+        <span class="group-dot" style="background:var(--asset)" aria-hidden="true"></span>
+        Conditions
+        <span class="group-hint">These are the only things that can move your starting line</span>
+      </summary>
+      <div class="chips" role="group" aria-label="Condition assets">
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">I can be myself in my work</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">A work environment that suits me</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">I am safe at home</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">Care at home is shared or supported</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">Supportive people around me</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">I set my own pace</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="1" onclick="toggleAsset(this)">Flexible schedule</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">Reliable childcare in place</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">I have help with operations or admin</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">I have guidance that fits my actual life</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">A financial safety net exists</button>
+      </div>
+    </details>
+
+    <details open class="asset-group" id="group-design">
+      <summary>
+        <span class="group-dot" style="background:var(--asset)" aria-hidden="true"></span>
+        Personal Strengths
+        <span class="group-hint">What you naturally bring, these do not move the line, but they matter</span>
+      </summary>
+      <div class="chips" role="group" aria-label="Personal strength assets">
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">Deep focus when it matters</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">I spot patterns others miss</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">Strong instinct for people</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">I see the bigger picture</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="1" onclick="toggleAsset(this)">Creative problem solver</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="1" onclick="toggleAsset(this)">I care deeply, and it shows</button>
+      </div>
+    </details>
+
+    <details open class="asset-group" id="group-inplace">
+      <summary>
+        <span class="group-dot" style="background:var(--asset)" aria-hidden="true"></span>
+        Already in Place
+        <span class="group-hint">Things already working, these do not move the line either</span>
+      </summary>
+      <div class="chips" role="group" aria-label="Already in place assets">
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="2" onclick="toggleAsset(this)">Recurring revenue</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="1" onclick="toggleAsset(this)">Loyal long-term clients</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="1" onclick="toggleAsset(this)">Working systems</button>
+        <button class="chip chip-asset" role="switch" aria-checked="false" data-pts="1" onclick="toggleAsset(this)">Audience already built</button>
+      </div>
+    </details>
+
+    <!-- ── LEDGER ── -->
+    <div class="ledger" role="region" aria-label="Your ledger">
+      <div class="ledger-title">Your ledger, built as you tap</div>
+      <div class="ledger-cols">
+        <div class="cost-col">
+          <div class="ledger-col-header">Taking from me</div>
+          <div class="ledger-col-items" id="cost-col-items" aria-label="Items taking from you">
+            <div class="ledger-empty">Nothing added yet</div>
+          </div>
+          <div class="add-row">
+            <input class="add-input" id="cost-input" placeholder="Add your own..." maxlength="35" aria-label="Add custom cost">
+            <button class="add-btn" onclick="addCustomCol('cost')" style="background:var(--cost)" aria-label="Add cost">+</button>
+          </div>
+        </div>
+        <div class="asset-col">
+          <div class="ledger-col-header">Working for me</div>
+          <div class="ledger-col-items" id="asset-col-items" aria-label="Items working for you">
+            <div class="ledger-empty">Nothing added yet</div>
+          </div>
+          <div class="add-row">
+            <input class="add-input" id="asset-input" placeholder="Add your own..." maxlength="35" aria-label="Add custom asset">
+            <button class="add-btn" onclick="addCustomCol('asset')" style="background:var(--asset)" aria-label="Add asset">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAX CALCULATOR ── -->
+    <div class="tax-calc" role="region" aria-label="Hidden cost calculator">
+      <div class="tax-calc-title">Put a number on what is taking from you</div>
+      <div class="rate-row">
+        <label class="rate-label" for="hourly-rate">My hourly rate ($)</label>
+        <input class="rate-input" id="hourly-rate" type="number" placeholder="e.g. 150" min="0" oninput="calcTax();autoSave()">
+      </div>
+      <div class="tax-results" id="tax-results">
+        <div class="tax-row"><div class="tx-label">Hidden cost hours / week</div><div class="tx-value red" id="tx-hrs">—</div></div>
+        <div class="tax-row"><div class="tx-label">$ given away free / week</div><div class="tx-value red" id="tx-week">—</div></div>
+        <div class="tax-row"><div class="tx-label">$ given away free / year</div><div class="tx-value gold" id="tx-year">—</div></div>
+        <div class="tax-insight" id="tx-insight"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <button class="next-btn btn-pink" onclick="goToPosition()" aria-label="Calculate and show my starting position">Show my starting position →</button>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PHASE 2 — YOUR STARTING POSITION
+     ═══════════════════════════════════════════ -->
+<section class="phase phase-2" id="p2" aria-label="Phase 2: Your starting position">
+
+  <div class="phase-header">
+    <div class="phase-label">
+      <div class="phase-num" aria-hidden="true">2</div>
+      <div class="phase-label-text">Your starting position</div>
+      <button class="tts-btn" onclick="speakPhase(2)" aria-label="Listen to this section">🔈 Listen</button>
+    </div>
+    <h1 class="phase-title">Where you are<br>actually starting from</h1>
+    <p class="phase-sub">Calculated from what you just told us, not a guess, your actual picture.</p>
+  </div>
+
+  <div class="phase-content">
+    <div class="position-card" id="position-card" role="region" aria-label="Your calculated starting position">
+      <div class="pos-emoji" id="pos-emoji" aria-hidden="true">—</div>
+      <div class="pos-title" id="pos-title">Calculating...</div>
+      <div class="pos-desc" id="pos-desc"></div>
+      <div class="pos-sent" id="pos-sent"></div>
+    </div>
+
+    <div class="counter-box" id="counter-box" style="display:none" role="region" aria-label="Conditions needed">
+      <div class="counter-title">To get to the starting line, you need</div>
+      <div class="counter-sub">Not mindset changes. Not working harder. These are the practical conditions that would stop the drain, the things that would need to change for you to actually start from the line.</div>
+      <div class="counter-items" id="counter-items"></div>
+    </div>
+
+    <div class="legacy-box" id="legacy-box" style="display:none" role="region" aria-label="Legacy impact">
+      <div class="legacy-title">What you can build for those who come after you</div>
+      <div class="legacy-stmt">Every condition you change for yourself, you also change for the people behind you, in your business, your family, your community. This is what that looks like.</div>
+      <div class="legacy-items" id="legacy-items"></div>
+    </div>
+  </div>
+
+  <div style="padding:0 var(--space-lg) var(--space-xl)">
+    <div class="intro-box" style="text-align:center">
+      <strong>Your map is saved on this device</strong>
+      Come back to this link after the conference to reprice your offers using the data you just built. Tap the 3 in the top right whenever you are ready.
+    </div>
+    <button class="export-btn" onclick="exportSummary()" aria-label="Export summary as text file" style="display:block;margin:var(--space-md) auto 0">Export my summary →</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PHASE 3 — REPRICE (post-conference)
+     ═══════════════════════════════════════════ -->
+<section class="phase phase-3" id="p3" aria-label="Phase 3: Reprice your offer">
+
+  <div class="phase-header">
+    <div class="phase-label">
+      <div class="phase-num" aria-hidden="true">3</div>
+      <div class="phase-label-text">Reprice</div>
+      <button class="tts-btn" onclick="speakPhase(3)" aria-label="Listen to this section">🔈 Listen</button>
+    </div>
+    <h1 class="phase-title">What are you actually<br>earning?</h1>
+    <p class="phase-sub">You know what is costing you. Now see what it means for what you charge.</p>
+  </div>
+
+  <div class="phase-content">
+
+    <!-- Starting position carried from Phase 2 -->
+    <div class="position-card" id="p3-position-card" role="region" aria-label="Your starting position" style="margin-bottom:var(--space-sm)">
+      <div class="pos-emoji" id="p3-pos-emoji" aria-hidden="true">—</div>
+      <div class="pos-title" id="p3-pos-title">Your starting position</div>
+      <div class="pos-desc" id="p3-pos-desc" style="font-size:0.72rem"></div>
+    </div>
+
+    <!-- Hidden costs carried from Phase 1 -->
+    <div class="tax-calc" role="region" aria-label="Your hidden costs from Phase 1">
+      <div class="tax-calc-title">Your hidden costs (from your picture)</div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;padding-bottom:var(--space-sm);border-bottom:1px solid rgba(255,255,255,0.06)">
+        <div class="tx-label">Hidden cost hours per week</div>
+        <div class="tx-value red" id="p3-hidden-hrs">—</div>
+      </div>
+      <div style="font-size:0.68rem;color:rgba(255,255,255,0.4);padding-top:var(--space-sm);line-height:1.6" id="p3-cost-list"></div>
+    </div>
+
+    <div class="intro-box">
+      <strong>How this works</strong>
+      You enter what you charge and the hours the client sees. The tool adds your hidden cost hours from Phase 1 to show what you are actually earning per hour. No hourly rate needed. The numbers do the talking.
+    </div>
+
+    <div class="chip-section cs-offer">
+      <div class="chip-section-title">What kind of offer?</div>
+      <div class="chips" id="offer-chips" role="group" aria-label="Offer types">
+        <button class="chip chip-offer" role="switch" aria-checked="false" onclick="selectOffer(this)">VIP Day</button>
+        <button class="chip chip-offer" role="switch" aria-checked="false" onclick="selectOffer(this)">Monthly retainer</button>
+        <button class="chip chip-offer" role="switch" aria-checked="false" onclick="selectOffer(this)">1:1 coaching package</button>
+        <button class="chip chip-offer" role="switch" aria-checked="false" onclick="selectOffer(this)">Group program</button>
+        <button class="chip chip-offer" role="switch" aria-checked="false" onclick="selectOffer(this)">Done-for-you service</button>
+        <button class="chip chip-offer" role="switch" aria-checked="false" onclick="selectOffer(this)">Strategy session</button>
+        <button class="chip chip-offer" role="switch" aria-checked="false" onclick="selectOffer(this)">Online course</button>
+        <button class="chip chip-offer" role="switch" aria-checked="false" onclick="selectOffer(this)">Speaking engagement</button>
+        <button class="chip chip-offer" role="switch" aria-checked="false" onclick="selectOffer(this)">Workshop</button>
+        <button class="chip chip-offer" role="switch" aria-checked="false" onclick="selectOffer(this)">Consulting day</button>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label" for="offer-name">Offer name</label>
+      <input class="text-input" id="offer-name" placeholder="Or type a specific offer..." oninput="calcReprice();autoSave()" maxlength="60">
+    </div>
+
+    <div class="input-group">
+      <label class="input-label" for="current-price">What you charge for this ($)</label>
+      <input class="num-input" id="current-price" type="number" placeholder="0" min="0" oninput="calcReprice();autoSave()">
+    </div>
+
+    <div class="input-group">
+      <label class="input-label" for="visible-hours">Hours the client sees</label>
+      <input class="num-input" id="visible-hours" type="number" placeholder="0" min="0" step="0.5" oninput="calcReprice();autoSave()">
+    </div>
+
+    <div class="result-box" id="result-box" role="region" aria-label="Reprice results">
+      <div class="result-row"><div class="result-label">Offer</div><div class="result-value" id="r-offer">—</div></div>
+      <div class="result-row"><div class="result-label">You charge</div><div class="result-value" id="r-charge">—</div></div>
+      <div class="result-row"><div class="result-label">Hours the client sees</div><div class="result-value" id="r-vis">—</div></div>
+      <div class="result-row"><div class="result-label">Your hidden cost hours per week</div><div class="result-value red" id="r-hidden">—</div></div>
+      <div class="result-row"><div class="result-label">Total actual hours</div><div class="result-value" id="r-total">—</div></div>
+      <div class="result-row"><div class="result-label">You think you earn per hour</div><div class="result-value" id="r-apparent">—</div></div>
+      <div class="result-row"><div class="result-label">You actually earn per hour</div><div class="result-value red" id="r-real">—</div></div>
+      <div class="result-row" style="border:none"><div class="result-label">The gap</div><div class="result-value gold" id="r-gap">—</div></div>
+      <div class="result-insight" id="r-insight"></div>
+    </div>
+
+  </div>
+
+  <button class="next-btn btn-dark" onclick="saveMap()" aria-label="Save your map">Save my map</button>
+  <div class="save-conf" id="save-conf" style="display:none">
+    <div class="save-conf-title">Saved</div>
+    <div class="save-conf-text">Everything you built is here on this device. Come back anytime, update your answers, refine your picture. It belongs to you.</div>
+    <button class="export-btn" onclick="exportSummary()" aria-label="Export summary as text file">Export my summary →</button>
+  </div>
+</section>
+
+</main>
+
+<!-- ── Accessibility Widget ── -->
+<button class="a11y-toggle" id="a11y-toggle" aria-label="Accessibility options" aria-expanded="false">
+  <span aria-hidden="true">♿</span> Access
+</button>
+
+<div class="a11y-panel" id="a11y-panel" role="dialog" aria-label="Accessibility settings">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <div style="font-size:0.82rem;font-weight:600">Accessibility</div>
+    <button onclick="closeA11y()" style="background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:1.2rem" aria-label="Close accessibility panel">&times;</button>
+  </div>
+  <div class="a11y-row">
+    <div class="a11y-label">Font size</div>
+    <div class="a11y-font-btns">
+      <button class="a11y-font-btn" onclick="changeFontSize(-1)" aria-label="Decrease font size">A-</button>
+      <button class="a11y-font-btn" onclick="changeFontSize(0)" aria-label="Reset font size">↺</button>
+      <button class="a11y-font-btn" onclick="changeFontSize(1)" aria-label="Increase font size">A+</button>
+    </div>
+  </div>
+  <div class="a11y-row">
+    <div class="a11y-label">Dyslexia font</div>
+    <button class="a11y-switch" id="dyslexia-toggle" onclick="toggleA11y('dyslexia')" aria-pressed="false" aria-label="Toggle dyslexia-friendly font"></button>
+  </div>
+  <div class="a11y-row">
+    <div class="a11y-label">High contrast</div>
+    <button class="a11y-switch" id="contrast-toggle" onclick="toggleA11y('contrast')" aria-pressed="false" aria-label="Toggle high contrast"></button>
+  </div>
+  <div class="a11y-row">
+    <div class="a11y-label">Reduced motion</div>
+    <button class="a11y-switch" id="motion-toggle" onclick="toggleA11y('motion')" aria-pressed="false" aria-label="Toggle reduced motion"></button>
+  </div>
+  <div class="a11y-row">
+    <div class="a11y-label">Reading guide</div>
+    <button class="a11y-switch" id="guide-toggle" onclick="toggleA11y('guide')" aria-pressed="false" aria-label="Toggle reading guide"></button>
+  </div>
+  <div class="a11y-row">
+    <div class="a11y-label">Line spacing</div>
+    <button class="a11y-switch" id="spacing-toggle" onclick="toggleA11y('spacing')" aria-pressed="false" aria-label="Toggle increased line spacing"></button>
+  </div>
+  <div class="a11y-row">
+    <div class="a11y-label">Dark mode</div>
+    <button class="a11y-switch" id="dark-toggle" onclick="toggleA11y('dark')" aria-pressed="false" aria-label="Toggle dark mode"></button>
+  </div>
+</div>
+
+<!-- ── Scripts ── -->
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/calculator.js"></script>
+<script src="/js/participant.js"></script>
+
+</body>
+</html>

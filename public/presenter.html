@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Misfit Architecture — Presenter View</title>
+<link rel="stylesheet" href="/css/tokens.css">
+<style>
+/* ═══════════════════════════════════════════════
+   Presenter View — designed to embed in Canva
+   Full viewport, dark, cinematic
+   ═══════════════════════════════════════════════ */
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0D0D1A;
+  color: #FAF8F6;
+  font-family: var(--font-body);
+}
+
+.presenter {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 3vh 4vw;
+  position: relative;
+}
+
+/* ── Header ── */
+.pres-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2vh;
+}
+
+.pres-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2.5vw, 2rem);
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.pres-title span {
+  display: block;
+  font-family: var(--font-prose);
+  font-style: italic;
+  font-size: 0.5em;
+  color: var(--gold);
+  font-weight: 400;
+  margin-top: 4px;
+}
+
+.pres-count {
+  text-align: right;
+  font-size: clamp(0.7rem, 1.2vw, 1rem);
+  color: rgba(255,255,255,0.4);
+}
+
+.pres-count strong {
+  font-family: var(--font-display);
+  font-size: 1.8em;
+  font-weight: 700;
+  color: var(--gold);
+  display: block;
+  line-height: 1;
+}
+
+/* ── Track ── */
+.track {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: clamp(6px, 1vw, 16px);
+  min-height: 0;
+}
+
+.zone {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+  transition: opacity 0.6s;
+}
+
+.zone-header {
+  padding: clamp(8px, 1.2vh, 16px) clamp(8px, 0.8vw, 14px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.zone-emoji {
+  font-size: clamp(1.2rem, 2vw, 2rem);
+  line-height: 1;
+}
+
+.zone-name {
+  font-family: var(--font-display);
+  font-size: clamp(0.6rem, 1.1vw, 0.95rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.zone-label {
+  font-size: clamp(0.45rem, 0.7vw, 0.65rem);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+}
+
+.zone-count {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 3rem);
+  font-weight: 900;
+  position: absolute;
+  top: clamp(8px, 1.2vh, 16px);
+  right: clamp(8px, 0.8vw, 14px);
+  opacity: 0;
+  transition: opacity 0.8s;
+}
+
+.zone-count.visible { opacity: 0.8; }
+
+/* Zone dots container */
+.zone-dots {
+  flex: 1;
+  padding: clamp(4px, 0.5vw, 10px);
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-end;
+  gap: clamp(3px, 0.4vw, 6px);
+  min-height: 0;
+}
+
+.dot {
+  width: clamp(8px, 1vw, 14px);
+  height: clamp(8px, 1vw, 14px);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.7);
+  animation: dotIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 6px rgba(255,255,255,0.2);
+}
+
+@keyframes dotIn {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Zone color variants */
+.zone-carpark  { background: rgba(232,93,74,0.1); border: 1px solid rgba(232,93,74,0.25); }
+.zone-carpark  .zone-name { color: #E85D4A; }
+.zone-carpark  .zone-count { color: #E85D4A; }
+.zone-carpark  .dot { background: #E85D4A; box-shadow: 0 0 6px rgba(232,93,74,0.4); }
+
+.zone-injuries { background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.25); }
+.zone-injuries .zone-name { color: #C9A84C; }
+.zone-injuries .zone-count { color: #C9A84C; }
+.zone-injuries .dot { background: #C9A84C; box-shadow: 0 0 6px rgba(201,168,76,0.4); }
+
+.zone-weight   { background: rgba(155,125,181,0.1); border: 1px solid rgba(155,125,181,0.25); }
+.zone-weight   .zone-name { color: #9B7DB5; }
+.zone-weight   .zone-count { color: #9B7DB5; }
+.zone-weight   .dot { background: #9B7DB5; box-shadow: 0 0 6px rgba(155,125,181,0.4); }
+
+.zone-coached  { background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); }
+.zone-coached  .zone-name { color: #3B82F6; }
+.zone-coached  .zone-count { color: #3B82F6; }
+.zone-coached  .dot { background: #3B82F6; box-shadow: 0 0 6px rgba(59,130,246,0.4); }
+
+.zone-blocks   { background: rgba(139,115,85,0.1); border: 1px solid rgba(139,115,85,0.25); }
+.zone-blocks   .zone-name { color: #8B7355; }
+.zone-blocks   .zone-count { color: #8B7355; }
+.zone-blocks   .dot { background: #8B7355; box-shadow: 0 0 6px rgba(139,115,85,0.4); }
+
+.zone-ahead    { background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.25); }
+.zone-ahead    .zone-name { color: #C9A84C; }
+.zone-ahead    .zone-count { color: #C9A84C; }
+.zone-ahead    .dot { background: #C9A84C; box-shadow: 0 0 6px rgba(201,168,76,0.4); }
+
+/* ── Footer ── */
+.pres-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2vh;
+  padding-top: 1.5vh;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.pres-brand {
+  font-family: var(--font-display);
+  font-size: clamp(0.6rem, 1vw, 0.85rem);
+  color: rgba(255,255,255,0.3);
+}
+
+.pres-brand em { color: var(--gold); font-style: italic; }
+
+.pres-waiting {
+  font-size: clamp(0.55rem, 0.8vw, 0.72rem);
+  color: rgba(255,255,255,0.25);
+  font-style: italic;
+}
+
+/* ── QR Overlay ── */
+.qr-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 100;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 2vh;
+  cursor: pointer;
+}
+
+.qr-overlay.show { display: flex; }
+
+.qr-overlay img {
+  width: min(50vw, 50vh);
+  height: min(50vw, 50vh);
+  filter: invert(1);
+}
+
+.qr-overlay-url {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 2vw, 1.8rem);
+  color: var(--gold);
+  letter-spacing: 0.05em;
+}
+
+.qr-overlay-hint {
+  font-size: clamp(0.6rem, 1vw, 0.85rem);
+  color: rgba(255,255,255,0.3);
+}
+
+/* ── Presenter Controls (hidden until hover) ── */
+.pres-controls {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 50;
+}
+
+.presenter:hover .pres-controls { opacity: 1; }
+
+.pres-ctrl-btn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.5);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pres-ctrl-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="presenter" id="presenter">
+
+  <div class="pres-controls">
+    <button class="pres-ctrl-btn" onclick="toggleQR()">QR Code</button>
+    <button class="pres-ctrl-btn" onclick="toggleCounts()">Toggle Counts</button>
+    <button class="pres-ctrl-btn" onclick="resetSession()">Reset</button>
+  </div>
+
+  <div class="pres-header">
+    <div class="pres-title">
+      Where is the room<br>actually starting from?
+      <span>Misfit Architecture — ENOUGH</span>
+    </div>
+    <div class="pres-count">
+      <strong id="completed-count">0</strong>
+      <span id="count-label">positions mapped</span>
+    </div>
+  </div>
+
+  <div class="track" id="track">
+    <div class="zone zone-carpark" id="zone-carpark">
+      <div class="zone-header">
+        <div class="zone-emoji">🚗</div>
+        <div class="zone-name">Still in the car park</div>
+        <div class="zone-label">Credibility &amp; belonging</div>
+      </div>
+      <div class="zone-count" id="count-carpark">0</div>
+      <div class="zone-dots" id="dots-carpark"></div>
+    </div>
+
+    <div class="zone zone-injuries" id="zone-injuries">
+      <div class="zone-header">
+        <div class="zone-emoji">🩹</div>
+        <div class="zone-name">Running on old injuries</div>
+        <div class="zone-label">Energy &amp; recovery</div>
+      </div>
+      <div class="zone-count" id="count-injuries">0</div>
+      <div class="zone-dots" id="dots-injuries"></div>
+    </div>
+
+    <div class="zone zone-weight" id="zone-weight">
+      <div class="zone-header">
+        <div class="zone-emoji">🎒</div>
+        <div class="zone-name">Carrying weight</div>
+        <div class="zone-label">Care &amp; relational load</div>
+      </div>
+      <div class="zone-count" id="count-weight">0</div>
+      <div class="zone-dots" id="dots-weight"></div>
+    </div>
+
+    <div class="zone zone-coached" id="zone-coached">
+      <div class="zone-header">
+        <div class="zone-emoji">📣</div>
+        <div class="zone-name">Wrong map</div>
+        <div class="zone-label">How work is set up</div>
+      </div>
+      <div class="zone-count" id="count-coached">0</div>
+      <div class="zone-dots" id="dots-coached"></div>
+    </div>
+
+    <div class="zone zone-blocks" id="zone-blocks">
+      <div class="zone-header">
+        <div class="zone-emoji">🏃</div>
+        <div class="zone-name">At the blocks</div>
+        <div class="zone-label">Starting position</div>
+      </div>
+      <div class="zone-count" id="count-blocks">0</div>
+      <div class="zone-dots" id="dots-blocks"></div>
+    </div>
+
+    <div class="zone zone-ahead" id="zone-ahead">
+      <div class="zone-header">
+        <div class="zone-emoji">⚡</div>
+        <div class="zone-name">Ahead of the line</div>
+        <div class="zone-label">Inherited advantage</div>
+      </div>
+      <div class="zone-count" id="count-ahead">0</div>
+      <div class="zone-dots" id="dots-ahead"></div>
+    </div>
+  </div>
+
+  <div class="pres-footer">
+    <div class="pres-brand">ENOUGH — <em>Tanya Hicks</em></div>
+    <div class="pres-waiting" id="waiting-text">Waiting for the room...</div>
+  </div>
+</div>
+
+<div class="qr-overlay" id="qr-overlay" onclick="toggleQR()">
+  <img id="qr-img" src="" alt="QR code to join">
+  <div class="qr-overlay-url" id="qr-url"></div>
+  <div class="qr-overlay-hint">Tap anywhere to close</div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const sessionCode = urlParams.get('s') || 'LIVE';
+
+// Socket
+const socket = io();
+socket.emit('join-presenter', { sessionCode });
+
+const THRESHOLD = 3; // Min dots before count shows
+let showCounts = true;
+const zoneCounts = { carpark: 0, injuries: 0, weight: 0, coached: 0, blocks: 0, ahead: 0 };
+
+// New dot arrives
+socket.on('new-dot', (data) => {
+  const zone = data.position;
+  if (!zone) return;
+
+  const container = document.getElementById('dots-' + zone);
+  if (!container) return;
+
+  const dot = document.createElement('div');
+  dot.className = 'dot';
+  container.appendChild(dot);
+
+  zoneCounts[zone] = (zoneCounts[zone] || 0) + 1;
+  updateCount(zone);
+});
+
+// Stats update
+socket.on('stats-update', (data) => {
+  document.getElementById('completed-count').textContent = data.completed || 0;
+  document.getElementById('count-label').textContent =
+    (data.completed === 1 ? 'position mapped' : 'positions mapped');
+
+  if (data.completed > 0) {
+    document.getElementById('waiting-text').textContent = 'Live — positions arriving';
+  }
+
+  // Sync zone counts
+  for (const [zone, count] of Object.entries(data.zones || {})) {
+    zoneCounts[zone] = count;
+    updateCount(zone);
+  }
+});
+
+// Reset
+socket.on('reset', () => {
+  for (const zone of Object.keys(zoneCounts)) {
+    zoneCounts[zone] = 0;
+    const container = document.getElementById('dots-' + zone);
+    if (container) container.innerHTML = '';
+    updateCount(zone);
+  }
+  document.getElementById('completed-count').textContent = '0';
+  document.getElementById('waiting-text').textContent = 'Waiting for the room...';
+});
+
+function updateCount(zone) {
+  const countEl = document.getElementById('count-' + zone);
+  if (!countEl) return;
+  const c = zoneCounts[zone] || 0;
+  countEl.textContent = c;
+  countEl.classList.toggle('visible', showCounts && c >= THRESHOLD);
+}
+
+// Controls
+function toggleQR() {
+  const overlay = document.getElementById('qr-overlay');
+  const isShown = overlay.classList.contains('show');
+  overlay.classList.toggle('show', !isShown);
+
+  if (!isShown) {
+    const baseUrl = window.location.origin;
+    const joinUrl = `${baseUrl}/?s=${encodeURIComponent(sessionCode)}`;
+    document.getElementById('qr-img').src = `/api/qr?session=${encodeURIComponent(sessionCode)}`;
+    document.getElementById('qr-url').textContent = joinUrl;
+  }
+}
+
+function toggleCounts() {
+  showCounts = !showCounts;
+  for (const zone of Object.keys(zoneCounts)) updateCount(zone);
+}
+
+function resetSession() {
+  if (confirm('Reset all participant data for this session?')) {
+    socket.emit('presenter-reset', { sessionCode });
+  }
+}
+</script>
+</body>
+</html>
