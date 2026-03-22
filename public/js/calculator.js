@@ -116,8 +116,11 @@ function calculatePosition(D) {
   const adjTotal = Object.values(adjHrs).reduce((a, b) => a + b, 0);
 
   // Credibility/belonging is most fundamental
-  if (adjHrs.carpark > 0) return 'carpark';
+  // But only stays carpark if the cost is significant (more than 2 hrs remaining)
+  // Light carpark costs that are mostly offset = you can move past it
+  if (adjHrs.carpark > 2) return 'carpark';
   if (adjTotal === 0) return 'blocks';
+  if (adjTotal <= 1.5 && assetItems.length >= 3) return 'blocks';
 
   // Find dominant category
   const order = ['injuries', 'weight', 'coached'];
